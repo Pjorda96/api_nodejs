@@ -5,7 +5,7 @@ const Schema = mongoose.Schema
 const bcrypt = require('bcrypt');
 const crypto = require('crypto');
 
-const UserSchema = Schema({
+const UserSchema = new Schema({
   email: { type: String, unique: true, lowercase: true },
   displayName: String,
   avatar: String,
@@ -14,14 +14,15 @@ const UserSchema = Schema({
   lastLogin: Date
 })
 
-UserSchema.pre('save', next => {
+// out of context with arrow function https://github.com/Automattic/mongoose/issues/4537
+UserSchema.pre('save', function(next) {
   let user = this
   if (!user.isModified('password')) return next()
 
   bcrypt.genSalt(10, (err, salt) => {
     if (err) return next(err)
 
-    bcrypt.hash(user.password, salt, null, (err, hash) => {
+    bcrypt.hash(user.password, salt, (err, hash) => {
       if (err) return next(err)
 
       user.password = hash
