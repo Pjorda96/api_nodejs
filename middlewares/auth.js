@@ -15,7 +15,6 @@ function isAuth(req, res, next) {
       next()
     })
     .catch(err => {
-      console.log('err', err)
       res.status(err.status).send({ message: err.message })
     })
 }
