@@ -18,7 +18,7 @@ function signUp(req, res) {
 }
 
 function signIn(req, res) {
-  user.find({ email: req.body.email }, (err, user) => {
+  User.find({ email: req.body.email }, (err, user) => {
     if (err) return res.status(500).send({ message: err })
     if (!user) return res.send(404).send({ message: 'User not found' })
 
