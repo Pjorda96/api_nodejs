@@ -1,18 +1,36 @@
 'use strict'
 
-const mongoose = require('mongoose')
-const app = require('./app')
+import express from 'express'
+import bodyParser from 'body-parser'
+const app = express()
 
-const config = require('./config');
-const port = config.port;
+const port = process.env.PORT || 3000
+const version = process.env.VERSION || '/api'
 
-mongoose.connect(config.db, (err, res) => {
-  if (err) {
-    return console.log('Error de conexión: ' + err)
-  }
-  console.log('Conexión establecida')
+app.use(bodyParser.urlencoded({ extended: false }))
+app.use(bodyParser.json())
 
-  app.listen(port, () => {
-    console.log(`Example app listening on port ${port}!`)
-  })
+app.get(version + '/product', (req, res) => {
+  res.status(200).send([])
 })
+
+app.get(version + '/product/:id', (req, res) => {
+
+})
+
+app.post(version + '/product', (req, res) => {
+  res.status(200).send(req.body)
+})
+
+app.put(version + '/product/:id', (req, res) => {
+
+})
+
+app.delete(version + '/product/:id', (req, res) => {
+
+})
+
+app.listen(port, () => {
+  console.log('API REST corriendo en http://localhost:'+ port)
+})
+
