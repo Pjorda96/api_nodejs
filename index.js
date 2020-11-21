@@ -20,11 +20,23 @@ app.use(bodyParser.urlencoded({ extended: false }))
 app.use(bodyParser.json())
 
 app.get(version + '/product', (req, res) => {
-  res.status(200).send([])
+  Product.find((err, products) => {
+    if (err) handleError(err, res)
+
+    res.status(200).send(products)
+  })
 })
 
 app.get(version + '/product/:id', (req, res) => {
+  const productId = req.params.id
+  console.log(productId)
 
+  Product.findById(productId, (err, productStored) => {
+    if (err) handleError(err, res)
+    if (!productStored) res.status(400).send({ message: 'Product not found' } )
+
+    res.status(200).send(productStored)
+  })
 })
 
 app.post(version + '/product', (req, res) => {
@@ -32,7 +44,7 @@ app.post(version + '/product', (req, res) => {
   const product = new Product(req.body)
 
   product.save((err, productStored) => {
-    if (err) res.status(500).send({ message: 'Error to store product: ' + err })
+    if (err) handleError(err, res)
 
     res.status(200).send(productStored)
   })
@@ -45,6 +57,10 @@ app.put(version + '/product/:id', (req, res) => {
 app.delete(version + '/product/:id', (req, res) => {
 
 })
+
+function handleError(err, res) {
+  res.status(500).send({ message: 'Error with database: ' + err })
+}
 
 mongoose.connect(database, databaseConfig, (err, res) => {
   if (err) {
