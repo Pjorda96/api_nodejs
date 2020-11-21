@@ -22,6 +22,7 @@ app.use(bodyParser.json())
 app.get(version + '/product', (req, res) => {
   Product.find((err, products) => {
     if (err) handleError(err, res)
+    if (!products) res.status(404).send({ message: 'No products stored' } )
 
     res.status(200).send(products)
   })
@@ -33,7 +34,7 @@ app.get(version + '/product/:id', (req, res) => {
 
   Product.findById(productId, (err, productStored) => {
     if (err) handleError(err, res)
-    if (!productStored) res.status(400).send({ message: 'Product not found' } )
+    if (!productStored) res.status(404).send({ message: 'Product not found' } )
 
     res.status(200).send(productStored)
   })
@@ -51,11 +52,30 @@ app.post(version + '/product', (req, res) => {
 })
 
 app.put(version + '/product/:id', (req, res) => {
+  const productId = req.params.id
+  console.log(productId)
 
+  Product.findByIdAndUpdate(productId, req.body, (err, productStored) => {
+    if (err) handleError(err, res)
+    if (!productStored) res.status(404).send({ message: 'Product not found' } )
+
+    res.status(200).send(productStored)
+  })
 })
 
 app.delete(version + '/product/:id', (req, res) => {
+  const productId = req.params.id
+  console.log(productId)
 
+  Product.findById(productId, (err, productStored) => {
+    if (err) res.status(404).send({ message: 'Product not found' } )
+
+    productStored.remove((err) => {
+      if (err) handleError(err, res)
+
+      res.status(200).send({ message: 'Product deleted' })
+    })
+  })
 })
 
 function handleError(err, res) {
