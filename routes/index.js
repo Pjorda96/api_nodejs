@@ -1,6 +1,8 @@
 'use strict'
 
 import express from 'express'
+import { isAuth } from '../middlewares/auth';
+
 const api = express.Router()
 
 import {
@@ -44,6 +46,10 @@ api.delete('/product/:id', async (req, res) => {
   const productCreated = await deleteProduct(productId)
 
   res.status(productCreated.status).send(productCreated.data)
+})
+
+api.get('/private', isAuth, (req, res) => {
+  res.end()
 })
 
 export default api

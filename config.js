@@ -4,5 +4,6 @@ export default {
   databaseConfig: {
     useNewUrlParser: true,
     useUnifiedTopology: true
-  }
+  },
+  SECRET_TOKEN: 'token'
 }
