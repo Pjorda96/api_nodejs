@@ -15,7 +15,16 @@ function signUp(req, res) {
 }
 
 function signIn(req, res) {
+  User.find({ email: req.body.email }, (err, user) => {
+    if (err) return res.status(500).send({ message: err })
+    if (!user) return res.status(404).send({ message: 'User not found' })
 
+    req.user = user
+    res.status(200).send({
+      message: 'Loggedin',
+      token: createToken(user)
+    })
+  })
 }
 
 export default {
