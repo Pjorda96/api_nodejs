@@ -3,8 +3,6 @@
 import express from 'express'
 import { isAuth } from '../middlewares/auth';
 
-const api = express.Router()
-
 import {
   getProducts,
   getProduct,
@@ -12,6 +10,12 @@ import {
   updateProduct,
   deleteProduct
 } from '../controllers/product'
+import {
+  signUp,
+  signIn
+} from '../controllers/user'
+
+const api = express.Router()
 
 api.get('/product', async (req, res) => {
   const products = await getProducts()
@@ -26,14 +30,14 @@ api.get('/product/:id', async (req, res) => {
   res.status(products.status).send(products.data)
 })
 
-api.post('/product', async (req, res) => {
+api.post('/product', isAuth, async (req, res) => {
   const product = req.body
   const productCreated = await createProduct(product)
 
   res.status(productCreated.status).send(productCreated.data)
 })
 
-api.put('/product/:id', async (req, res) => {
+api.put('/product/:id', isAuth, async (req, res) => {
   const productId = req.params.id
   const product = req.body
   const productCreated = await updateProduct(productId, product)
@@ -41,12 +45,16 @@ api.put('/product/:id', async (req, res) => {
   res.status(productCreated.status).send(productCreated.data)
 })
 
-api.delete('/product/:id', async (req, res) => {
+api.delete('/product/:id', isAuth, async (req, res) => {
   const productId = req.params.id
   const productCreated = await deleteProduct(productId)
 
   res.status(productCreated.status).send(productCreated.data)
 })
+
+api.post('/signup', signUp)
+
+api.post('/signin', signIn)
 
 api.get('/private', isAuth, (req, res) => {
   res.end()

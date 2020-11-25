@@ -15,7 +15,7 @@ const UserSchema = Schema({
   lastLogin: Date
 })
 
-UserSchema.pre('save', next => {
+UserSchema.pre('save', function(next) {
   let user = this
   if (!user.isModified('password')) return next()
 
@@ -31,7 +31,7 @@ UserSchema.pre('save', next => {
   })
 })
 
-UserSchema.methods.gravatar = () => {
+UserSchema.methods.gravatar = function() {
   if (!this.email) return `https://gravatar.com/avatar?s=200&d=retro`
 
   const md5 = crypto.createHash('md5').update(this.email).digest('hex')

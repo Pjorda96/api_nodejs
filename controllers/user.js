@@ -1,6 +1,5 @@
 'use strict'
 
-import mongoose from 'mongoose'
 import User from '../models/user'
 import { createToken } from '../services'
 
@@ -27,7 +26,7 @@ function signIn(req, res) {
   })
 }
 
-export default {
+export {
   signUp,
   signIn
 }
